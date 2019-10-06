@@ -1,0 +1,23 @@
+.handle {
+  fill-opacity: 0.5;
+  stroke: red;
+
+  &:hover {
+    fill-opacity: 0.95;
+  }
+
+  &.selected {
+    stroke: darkgreen;
+  }
+}
+
+path {
+  stroke: darkblue;
+  stroke-width: 2px;
+  stroke-linecap: square;
+  fill: none;
+
+  &.selected {
+    stroke: darkslategray;
+  }
+}
