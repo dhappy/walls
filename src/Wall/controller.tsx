@@ -3,21 +3,31 @@ import { WallView } from './view'
 import { Wall } from '.'
 
 export class WallController
- extends React.Component <{wall:Wall}, {}>
+ extends React.Component <{wall:Wall}, {selected:boolean}>
 {
+  constructor(props:any) {
+    super(props)
+    this.state = { selected: false }
+  }
+
   componentDidMount() {
     console.log('CDM', this.props)
   }
 
-  mouseUp = (evt:any) => console.info('MU', evt)
+  mouseDown = (evt:any) => (
+    this.setState({selected: true})
+  )
 
-  mouseDown = (evt:any) => console.info('MD', evt)
+  mouseUp = (evt:any) => (
+    this.setState({selected: false})
+  )
 
-  render = () => (
+  render() { return (
     <WallView
       mouseUp={this.mouseUp}
       mouseDown={this.mouseDown}
       wall={this.props.wall}
+      selected={this.state.selected}
     />
-  )
+  )}
 }

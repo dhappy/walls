@@ -2,22 +2,34 @@ import React from 'react'
 import { PointView } from './view'
 import { Point } from '.'
 
-type ControllerProps = {
-  center:Point, mouseUp:any, mouseDown:any
-}
-
 export class PointController
- extends React.Component<ControllerProps, {}>
+ extends React.Component<
+   { center:Point }, { selected:boolean }
+ >
 {
-  mouseUp = (evt:any) => console.info('PMU')
+  constructor(props:any) {
+    super(props)
+    this.state = { selected: false }
+  }
 
-  mouseDown = (evt:any) => console.info('PMD')
+  mouseDown = (evt:any) => (
+    this.setState({selected: true})
+  )
 
-  render = () => (
+  mouseMove = (evt:any) => (
+    Point.toCanvas({x: evt.clientX, y: evt.clientY})
+  )
+  
+  mouseUp = (evt:any) => (
+    this.setState({selected: false})
+  )
+
+  render() { return (
     <PointView
      center={this.props.center}
      mouseUp={this.mouseUp}
      mouseDown={this.mouseDown}
+     selected={this.state.selected}
     />
-  )
+  ) }
 }
