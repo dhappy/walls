@@ -1,6 +1,6 @@
 import { MoveTo } from './MoveTo'
 import { LineTo } from './LineTo'
-import { Point } from './Point'
+import { Point } from '../Point'
 
 export class Path {
   pts = [
