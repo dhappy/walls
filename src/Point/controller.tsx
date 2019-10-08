@@ -4,7 +4,7 @@ import { Point } from '.'
 
 export class PointController
  extends React.Component<
-   { center:Point, onMove:any },
+   { center:Point },
    { center:Point, selected:boolean }
  >
 {
@@ -34,9 +34,6 @@ export class PointController
         evt.clientX, evt.clientY
       )
       let ctr = this.state.center.moveTo(at)
-
-      //this.setState({center: ctr})
-      this.props.onMove(ctr)
     }
   }
   

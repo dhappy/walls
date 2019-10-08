@@ -8,10 +8,23 @@ import { ClosePath } from '../models/ClosePath'
 
 export class Path {
   parts:Operation[] = []
+  private onChanges:(() => any)[] = []
 
   constructor(parts?:Operation[]) {
     if(parts) this.parts = parts
+
+    this.points.forEach(p => (
+      p.addMoveListener(this.pointMoved)
+    ))
   }
+
+  addChangeListener(listen:() => any) {
+    this.onChanges.push(listen)
+  }
+
+  pointMoved = () => (
+    this.onChanges.forEach(l => l.call(this))
+  )
 
   get points() { return (
     this.parts

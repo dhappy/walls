@@ -4,21 +4,32 @@ import { Offset } from '../models/Offset'
 export class Point {
   public x:number
   public y:number
+  private onMoves:(() => any)[] = []
 
   constructor({x, y}:{x:number, y:number} ) {
     this.x = x
     this.y = y
   }
 
+  addMoveListener = (l:() => any) => (
+    this.onMoves.push(l)
+  )
+
   moveTo = (p:Point):Point => {
     this.x = p.x
     this.y = p.y
+
+    this.onMoves.forEach(l => l.call(l))
+
     return this
   }
 
   plus = (o:Offset) => {
     this.x += o.dx
     this.y += o.dy
+
+    this.onMoves.forEach(l => l.call(l))
+
     return this
   }
 

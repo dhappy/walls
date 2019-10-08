@@ -8,12 +8,10 @@ import { Path } from '../Path'
 
 export function WallView({
   wall, selected,
-  onMouseDown, onMouseUp,
-  onPointMoved
+  onMouseDown, onMouseUp
 }:{
   wall:Wall, selected:boolean,
-  onMouseDown:any, onMouseUp:any,
-  onPointMoved:any
+  onMouseDown:any, onMouseUp:any
 }) { return (
   <g className='plan'>
     {wall.center.bBoxes.map((box:Path, idx:number) => (
@@ -26,11 +24,10 @@ export function WallView({
       onMouseUp={onMouseUp}
       filter='url(#outline)'
     />
-    {wall.center.points.map((pnt:Point, idx:number) => (
-      <PointCtrl
-       center={pnt} key={idx}
-       onMove={onPointMoved}
-      />
-    ))}
+    {wall.center.points.map(
+      (pnt:Point, idx:number) => (
+        <PointCtrl center={pnt} key={idx}/>
+      )
+    )}
   </g>
 )}

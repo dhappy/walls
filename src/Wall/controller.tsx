@@ -11,12 +11,19 @@ export class WallController
   constructor(props:any) {
     super(props)
     this.state = {
-      selected: false, wall:props.wall
+      selected: false, wall: props.wall
     }
+    props.wall.center.addChangeListener(
+      this.centerChanged
+    )
   }
 
   componentDidMount() {
     console.log('CDM', this.props)
+  }
+
+  centerChanged = () => {
+    this.setState({wall: this.state.wall})
   }
 
   mouseDown = (evt:any) => (
@@ -27,17 +34,12 @@ export class WallController
     this.setState({selected: false})
   )
 
-  pointMoved = () => (
-    this.setState({wall: this.state.wall})
-  )
-
   render() { return (
     <WallView
       onMouseUp={this.mouseUp}
       onMouseDown={this.mouseDown}
       wall={this.state.wall}
       selected={this.state.selected}
-      onPointMoved={this.pointMoved}
     />
   )}
 }
