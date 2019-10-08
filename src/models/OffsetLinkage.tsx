@@ -1,9 +1,11 @@
 import { Point } from '../Point'
 import { Offset } from './Offset';
+import { Deltas } from './Deltas';
 
 export class OffsetLinkage {
   public derived:Point[] = []
   private origin:Point
+  private initial:Deltas[] = []
 
   constructor({
     from, to
@@ -12,16 +14,23 @@ export class OffsetLinkage {
   }) {
     this.derived = to
     this.origin = from
+
+    this.initial = this.derived.map(
+      p => from.offsetTo(p)
+    )
   }
 
   set offset(o:Offset) {
-    this.derived.forEach((p, idx) => {
-      let fromOrigin = (
-        this.origin.offsetTo(p)
-      )
-      p.moveTo(
-        p.plus(fromOrigin.plus(o))
-      )
-    });
+    console.info('Offset Linkage', o)
+
+    this.derived.forEach(
+      (p:Point, i:number) => {
+        p.moveTo(
+          this.origin.plus(
+            this.initial[i].plus(o)
+          )
+        )
+      }
+    )
   }
 }

@@ -5,6 +5,7 @@ import { Wall } from '.'
 import { Point } from '../Point'
 import { PathController as PathCtrl } from '../Path/controller'
 import { Path } from '../Path'
+import { PathFactory } from '../Path/factory'
 
 export function WallView({
   wall, selected,
@@ -14,9 +15,12 @@ export function WallView({
   onMouseDown:any, onMouseUp:any
 }) { return (
   <g className='plan'>
-    {wall.center.bBoxes.map((box:Path, idx:number) => (
-      <PathCtrl path={box} key={idx}/>
-    ))}
+    {PathFactory.boxesAround(wall.center).map(
+      (box:Path, idx:number) => {
+        console.debug('BBox', box)
+        return <PathCtrl path={box} key={idx}/>
+      }
+    )}
     <path
       d={wall.center.toString()}
       className={['wall', selected ? ' selected' : null].join(' ')}

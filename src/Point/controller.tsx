@@ -24,6 +24,15 @@ export class PointController
     }
   }
 
+  componentWillUnmount() {
+    let canvas = document.getElementById('canvas')
+    if(canvas) {
+      canvas.removeEventListener(
+        'mousemove', this.mouseMove
+      )
+    }
+  }
+
   mouseDown = (evt:any) => (
     this.setState({selected: true})
   )
@@ -33,7 +42,7 @@ export class PointController
       let at = Point.toCanvas(
         evt.clientX, evt.clientY
       )
-      let ctr = this.state.center.moveTo(at)
+      this.state.center.moveTo(at)
     }
   }
   

@@ -1,7 +1,7 @@
 import React from 'react'
 import { PlanView } from './view'
 import { Wall } from '../Wall'
-import { Path } from '../Path'
+import { BasicPath } from '../models/BasicPath'
 import { MoveTo } from '../models/MoveTo'
 import { Point } from '../Point'
 import { LineTo } from '../models/LineTo'
@@ -12,7 +12,7 @@ export class PlanController
   constructor(props:any){
     super(props)
     this.state = { walls: [
-      new Wall(new Path([
+      new Wall(new BasicPath([
         new MoveTo(new Point({x: 12, y: 12})),
         new LineTo(new Point({x: 248, y: 12})),
         new MoveTo(new Point({x: 248, y: 36})),

@@ -1,5 +1,6 @@
 import { Deltas } from '../models/Deltas'
 import { Offset } from '../models/Offset'
+import { DerivedPoint } from '../models/DerivedPoint'
 
 export class Point {
   public x:number
@@ -15,29 +16,63 @@ export class Point {
     this.onMoves.push(l)
   )
 
-  moveTo = (p:Point):Point => {
+  private onMove = () => {
+    this.onMoves.forEach(l => l.call(this))
+  }
+
+  moveTo = (p:Point):Point|undefined => {
     this.x = p.x
     this.y = p.y
 
-    this.onMoves.forEach(l => l.call(l))
+    this.onMove()
 
     return this
   }
 
-  plus = (o:Offset) => {
-    this.x += o.dx
-    this.y += o.dy
-
-    this.onMoves.forEach(l => l.call(l))
-
-    return this
-  }
+  plus = (o:Offset) => (
+    new Point({
+      x: this.x + o.dx, y: this.y + o.dy,
+    })
+  )
 
   offsetTo = (p:Point):Deltas => (
     new Deltas({
       dx: p.x - this.x, dy: p.y - this.y
     })
   )
+  
+  rel = {
+    // https://www.geeksforgeeks.org/find-points-at-a-given-distance-on-a-line-of-given-slope/
+    away: (m:number, d:number):Point => {
+      let impl = (through:Point, m:number, distance:number) => {
+        const imm = Math.sqrt(1 / (1 + m * m))
+        let factor = { x: imm, y: imm * m }
+
+        if(m === Infinity) {
+          factor = { x: 0, y: 1 }
+        } else if(m === -Infinity) {
+          factor = { x: 0, y: -1 }
+        } else if(Object.is(m, -0)) {
+          factor = { x: -1, y: 0 }
+        } else if(m === 0) {
+          factor = { x: 1, y: 0 }
+        } else if(m < 0) {
+          m *= -1 // Wrong
+        }
+
+        return {
+          x: through.x + distance * factor.x,
+          y: through.y + distance * factor.y,
+        }
+      }
+
+      return new DerivedPoint({
+        from: [(this as Point)],
+        fx: (p:Point) => impl(p, m, d).x,
+        fy: (p:Point) => impl(p, m, d).y,
+      })
+    }
+  }
 
   static toCanvas(x:number, y:number):Point {
     let svg = document.getElementById('canvas') as unknown as SVGSVGElement
@@ -52,30 +87,5 @@ export class Point {
     }
 
     return new Point({x: pt.x, y: pt.y })
-  }
-
-  // https://www.geeksforgeeks.org/find-points-at-a-given-distance-on-a-line-of-given-slope/
-  public static at(
-    m:number, through:Point, distance:number
-  ):Point {
-    const imm = Math.sqrt(1 / (1 + m * m))
-    let factor = { x: imm, y: imm * m }
-
-    if(m === Infinity) {
-      factor = { x: 0, y: 1 }
-    } else if(m === -Infinity) {
-      factor = { x: 0, y: -1 }
-    } else if(Object.is(m, -0)) {
-      factor = { x: -1, y: 0 }
-    } else if(m === 0) {
-      factor = { x: 1, y: 0 }
-    } else if(m < 0) {
-      m *= -1 // Wrong
-    }
-
-    return new Point({
-      x: through.x + distance * factor.x,
-      y: through.y + distance * factor.y,
-    })
   }
 }

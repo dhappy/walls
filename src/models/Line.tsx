@@ -27,4 +27,8 @@ export class Line {
   get minv() {
     return -1 / this.m
   }
+
+  get points() {
+    return [this.a, this.b]
+  }
 }

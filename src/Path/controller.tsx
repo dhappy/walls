@@ -21,25 +21,59 @@ export class PathController
     }
   }
 
+  componentDidMount() {
+    let canvas = (
+      document.getElementById('canvas')
+    )
+    if(canvas) {
+      canvas.addEventListener(
+        'mousemove', this.mouseMove
+      )
+      canvas.addEventListener(
+        'mouseup', this.mouseUp
+      )
+    }
+  }
+
+  componentWillUnmount() {
+    let canvas = (
+      document.getElementById('canvas')
+    )
+    if(canvas) {
+      canvas.removeEventListener(
+        'mousemove', this.mouseMove
+      )
+      canvas.removeEventListener(
+        'mouseup', this.mouseUp
+      )
+    }
+  }
+
   mouseDown = (evt:any) => {
     this.setState({selected: true})
+
     this.origin = Point.toCanvas(
       evt.clientX, evt.clientY
     )
     this.link = new OffsetLinkage({
       from: this.origin,
-      to: this.state.path.points
+      to: this.state.path.sources
     })
   }
 
   mouseMove = (evt:any) => {
     if(!this.origin || !this.link) return
 
-    let at = Point.toCanvas(
-      evt.clientX, evt.clientY
-    )
-    let l = new Line(this.origin, at)
-    this.link.offset = l
+    if(this.state.selected) {
+      let at = Point.toCanvas(
+        evt.clientX, evt.clientY
+      )
+      let l = new Line(this.origin, at)
+      this.link.offset = l
+
+      // Bounding Boxes are not updating
+      this.setState({path: this.state.path})
+    }
   }
 
   mouseUp = () => {

@@ -18,9 +18,7 @@ export class WallController
     )
   }
 
-  componentDidMount() {
-    console.log('CDM', this.props)
-  }
+  componentDidMount() {}
 
   centerChanged = () => {
     this.setState({wall: this.state.wall})
