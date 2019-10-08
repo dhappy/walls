@@ -1,4 +1,4 @@
-import { Path } from '../models/Path'
+import { Path } from '../Path'
 
 export class Wall {
   center = new Path()

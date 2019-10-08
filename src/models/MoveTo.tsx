@@ -1,7 +1,8 @@
-import { Operation } from './Operation'
+import { PointArgOp } from './PointArgOp'
 
-export class MoveTo extends Operation {
-  toString = () => (
-    `M${this.p.x},${this.p.y}`
-  )
+export class MoveTo extends PointArgOp {
+  toString = () => {
+    if(!this.point) throw 'Point Not Set'
+    return `M${this.point.x},${this.point.y}`
+  }
 }
