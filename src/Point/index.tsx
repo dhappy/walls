@@ -40,6 +40,14 @@ export class Point {
     })
   )
 
+  static parse(from:string):Point {
+    let parts = from.split(/\s*[ ,/]\s*/)
+    return new Point({
+      x: Number.parseFloat(parts[0]),
+      y: Number.parseFloat(parts[1]),
+    })
+  }
+
   static toCanvas(x:number, y:number):Point {
     let svg = document.getElementById('canvas') as unknown as SVGSVGElement
     let pt = svg.createSVGPoint()

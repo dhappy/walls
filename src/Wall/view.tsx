@@ -17,7 +17,6 @@ export function WallView({
   <g className='plan'>
     {PathFactory.boxesAround(wall.center).map(
       (box:Path, idx:number) => {
-        console.debug('BBox', box)
         return <PathCtrl path={box} key={idx}/>
       }
     )}

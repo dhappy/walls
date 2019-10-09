@@ -2,16 +2,28 @@ import React from 'react'
 import { WallController as WallCtrl } from '../Wall/controller'
 import { Wall } from '../Wall'
 import './style.scss'
+import { Rectangle as Rect } from '../models/Rectangle'
 
 export function PlanView(
-  {walls}:{walls:Wall[]}
+  { walls, scroll, viewbox }:
+  {
+    walls:Wall[], viewbox:Rect,
+    scroll:(e:any) => any,
+  }
 ) {
   return (
     <svg
-     xmlns="http://www.w3.org/2000/svg"
-     width="100%" height="100%"
-     viewBox="0 0 260 140"
-     id="canvas"
+      xmlns="http://www.w3.org/2000/svg"
+      width="100%" height="100%"
+      viewBox={
+        [
+          viewbox.x, viewbox.y,
+          viewbox.width, viewbox.height
+        ]
+        .join(' ')
+      }
+      id="canvas"
+      onWheel={scroll}
     >
       <defs>
         <title>Church</title>
@@ -24,11 +36,13 @@ export function PlanView(
           </feComponentTransfer>
         </filter>
       </defs>
-      {walls.map((wall, idx) => (
-        <WallCtrl wall={wall} key={idx}/>
-      ))}
-      {/* furniture */} 
-      {/* spaces */} 
+      <g>
+        {walls.map((wall, idx) => (
+          <WallCtrl wall={wall} key={idx}/>
+        ))}
+        {/* furniture */}
+        {/* spaces */}
+      </g>
     </svg>
   )
 }

@@ -7,6 +7,8 @@ import { ClosePath } from "../models/ClosePath"
 import { Path } from "."
 import { PointArgOp } from "../models/PointArgOp"
 import { PointFactory as Linker } from '../Point/factory'
+import { Operation } from "../models/Operation"
+import { BasicPath } from "../models/BasicPath"
 
 export class PathFactory {
   width:number = 4
@@ -14,6 +16,8 @@ export class PathFactory {
 
   static boxesAround = (p:Path, width = 4) => {
     let curr:Point|undefined
+
+    console.info('Boxing')
 
     return (
       p.parts
@@ -36,7 +40,7 @@ export class PathFactory {
           ) {
             if(!curr) throw 'Line Without Move'
             ret = PathFactory.boxAround(
-              new Line(curr as Point, next), 4//change
+              new Line(curr, next), width
             )
           } else {
             console.warn('Unknown Path Part', part)
@@ -54,6 +58,13 @@ export class PathFactory {
 
   static boxAround = (l:Line, width = 4) => {
     let gs:Point[] = [] // generated points
+
+    // I know the Linker.away syntax is ugly,
+    // but I'm having difficulty with circular
+    // dependencies. (I.e. p.away() makes the
+    // most sense, but it needs to generate a
+    // DerivedPoint, but Point can't include
+    // DerivedPoint and simultaneously vice-versa.)
 
     // Go width / 2 away at 90°
     let pre = Linker.away(
@@ -93,5 +104,44 @@ export class PathFactory {
       ],
       l.points
     )
+  }
+
+  static parse(curve:string) {
+    return new BasicPath(PathFactory.opsFor(curve))
+  }
+
+  static opsFor(curve:string):Operation[] {
+    let list = curve.split(/\s*([MLZ])\s*/)
+    let ops:Operation[] = []
+
+    const safeShift = ():string => {
+      let nxt
+      while(list.length > 0 && !nxt) {
+        nxt = list.shift()
+      }
+      if(!nxt) throw 'Missing Next'
+      return nxt
+    }
+
+    while(list.length > 0) {
+      switch(safeShift()) {
+      case 'M':
+        ops.push(new MoveTo(
+          Point.parse(safeShift())
+        ))
+        break
+      case 'L':
+        ops.push(new LineTo(
+          Point.parse(safeShift())
+        ))
+        break
+      case 'Z':
+        ops.push(new ClosePath())
+        break
+      default:
+        throw 'Unrecognized Operation'
+      }
+    }
+    return ops
   }
 }

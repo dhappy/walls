@@ -70,9 +70,6 @@ export class PathController
       )
       let l = new Line(this.origin, at)
       this.link.offset = l
-
-      // Bounding Boxes are not updating
-      this.setState({path: this.state.path})
     }
   }
 
@@ -83,10 +80,10 @@ export class PathController
 
   render = () => (
     <PathView
-     path={this.state.path}
-     selected={this.state.selected}
-     onMouseDown={this.mouseDown}
-     onMouseUp={this.mouseUp}
+      path={this.state.path}
+      selected={this.state.selected}
+      onMouseDown={this.mouseDown}
+      onMouseUp={this.mouseUp}
     />
   )
 }

@@ -1,9 +1,9 @@
 .handle {
-  fill-opacity: 0.5;
+  fill-opacity: 0.25;
   stroke: red;
 
   &:hover {
-    fill-opacity: 0.95;
+    fill-opacity: 0;
   }
 
   &.selected {
@@ -28,9 +28,9 @@ path {
 }
 
 .bbox {
-  fill: orange;
+  fill: orangered;
   fill-opacity: 0.5;
-  //stroke: none;
+  stroke: none;
 
   &:hover {
     fill-opacity: 0.9;
