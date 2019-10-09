@@ -1,7 +1,7 @@
 import React from 'react'
 import { PathView } from './view'
 import { Path } from '../Path'
-import { Point } from '../Point'
+import { Point, StaticPoint } from '../Point/index'
 import { Line } from '../models/Line'
 import { OffsetLinkage } from '../models/OffsetLinkage'
 
@@ -52,7 +52,7 @@ export class PathController
   mouseDown = (evt:any) => {
     this.setState({selected: true})
 
-    this.origin = Point.toCanvas(
+    this.origin = StaticPoint.toCanvas(
       evt.clientX, evt.clientY
     )
     this.link = new OffsetLinkage({
@@ -65,7 +65,7 @@ export class PathController
     if(!this.origin || !this.link) return
 
     if(this.state.selected) {
-      let at = Point.toCanvas(
+      let at = StaticPoint.toCanvas(
         evt.clientX, evt.clientY
       )
       let l = new Line(this.origin, at)

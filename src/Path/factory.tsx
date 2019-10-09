@@ -55,19 +55,19 @@ export class PathFactory {
     let gs:Point[] = [] // generated points
 
     // Go width / 2 away at 90°
-    let pre = l.a.rel.away(l.minv, -width / 2)
+    let pre = l.a.away(l.minv, -width / 2)
    
     // Then follow m to find the corner
-    gs.push(pre.rel.away(l.m, -width / 2))
+    gs.push(pre.away(l.m, -width / 2))
 
     // The second point is width away at 1/m
-    gs.push(gs[gs.length - 1].rel.away(l.minv, width))
+    gs.push(gs[gs.length - 1].away(l.minv, width))
 
     // Repeat reversed for the bottom
-    pre = l.b.rel.away(l.minv, width / 2)
-    gs.push(pre.rel.away(l.m, width / 2))
+    pre = l.b.away(l.minv, width / 2)
+    gs.push(pre.away(l.m, width / 2))
     gs.push(
-      gs[gs.length - 1].rel.away(l.minv, -width)
+      gs[gs.length - 1].away(l.minv, -width)
     )
 
     let lines = gs.slice(1).map(

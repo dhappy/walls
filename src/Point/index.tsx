@@ -2,9 +2,20 @@ import { Deltas } from '../models/Deltas'
 import { Offset } from '../models/Offset'
 import { DerivedPoint } from '../models/DerivedPoint'
 
-export class Point {
-  public x:number
-  public y:number
+export interface Point {
+  x:number
+  y:number
+
+  moveTo:(p:Point) => Point
+  offsetTo:(p:Point) => Deltas
+  plus:(o:Offset) => Point
+  away:(m:number, d:number) => Point
+  addMoveListener:(l:() => any) => any
+}
+
+export class BasePoint implements Point {
+  x:number
+  y:number
   private onMoves:(() => any)[] = []
 
   constructor({x, y}:{x:number, y:number} ) {
@@ -20,7 +31,7 @@ export class Point {
     this.onMoves.forEach(l => l.call(this))
   }
 
-  moveTo = (p:Point):Point|undefined => {
+  moveTo = (p:Point):Point => {
     this.x = p.x
     this.y = p.y
 
@@ -29,49 +40,52 @@ export class Point {
     return this
   }
 
-  plus = (o:Offset) => (
-    new Point({
-      x: this.x + o.dx, y: this.y + o.dy,
-    })
-  )
-
   offsetTo = (p:Point):Deltas => (
     new Deltas({
       dx: p.x - this.x, dy: p.y - this.y
     })
   )
-  
-  rel = {
-    // https://www.geeksforgeeks.org/find-points-at-a-given-distance-on-a-line-of-given-slope/
-    away: (m:number, d:number):Point => {
-      let impl = (through:Point, m:number, distance:number) => {
-        const imm = Math.sqrt(1 / (1 + m * m))
-        let factor = { x: imm, y: imm * m }
 
-        if(m === Infinity) {
-          factor = { x: 0, y: 1 }
-        } else if(m === -Infinity) {
-          factor = { x: 0, y: -1 }
-        } else if(Object.is(m, -0)) {
-          factor = { x: -1, y: 0 }
-        } else if(m === 0) {
-          factor = { x: 1, y: 0 }
-        } else if(m < 0) {
-          m *= -1 // Wrong
-        }
+  plus = (o:Offset) => (
+    new StaticPoint({
+      x: this.x + o.dx, y: this.y + o.dy,
+    })
+  )
 
-        return {
-          x: through.x + distance * factor.x,
-          y: through.y + distance * factor.y,
-        }
+  // https://www.geeksforgeeks.org/find-points-at-a-given-distance-on-a-line-of-given-slope/
+  away = (m:number, d:number):Point => {
+    let impl = (through:Point, m:number, distance:number) => {
+      const imm = Math.sqrt(1 / (1 + m * m))
+      let factor = { x: imm, y: imm * m }
+
+      if(m === Infinity) {
+        factor = { x: 0, y: 1 }
+      } else if(m === -Infinity) {
+        factor = { x: 0, y: -1 }
+      } else if(Object.is(m, -0)) {
+        factor = { x: -1, y: 0 }
+      } else if(m === 0) {
+        factor = { x: 1, y: 0 }
+      } else if(m < 0) {
+        m *= -1 // Wrong
       }
 
-      return new DerivedPoint({
-        from: [(this as Point)],
-        fx: (p:Point) => impl(p, m, d).x,
-        fy: (p:Point) => impl(p, m, d).y,
-      })
+      return {
+        x: through.x + distance * factor.x,
+        y: through.y + distance * factor.y,
+      }
     }
+
+    return new DerivedPoint({
+      from: [(this as Point)],
+      fx: (p:Point) => impl(p, m, d).x,
+      fy: (p:Point) => impl(p, m, d).y,
+    })
+  }
+}
+
+export class StaticPoint extends BasePoint {
+  rel = {
   }
 
   static toCanvas(x:number, y:number):Point {
@@ -86,6 +100,6 @@ export class Point {
       pt = pt.matrixTransform(ctm.inverse())
     }
 
-    return new Point({x: pt.x, y: pt.y })
+    return new StaticPoint({x: pt.x, y: pt.y })
   }
 }
