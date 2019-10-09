@@ -21,7 +21,7 @@ export class PointFactory {
       } else if(m === 0) {
         factor = { x: 1, y: 0 }
       } else if(m < 0) {
-        m *= -1 // Wrong
+        //m *= -1 // Wrong
       }
 
       return {

@@ -13,15 +13,15 @@ export class OffsetLinkage {
     from:Point, to:Point[]
   }) {
     this.derived = to
-    this.origin = from
+    this.origin = new Point(from)
 
     this.initial = this.derived.map(
-      p => from.offsetTo(p)
+      p => this.origin.offsetTo(p)
     )
   }
 
   set offset(o:Offset) {
-    console.info('Offset Linkage', o)
+    console.info('Offset Linkage', o, this.initial)
 
     this.derived.forEach(
       (p:Point, i:number) => {

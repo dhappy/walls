@@ -52,7 +52,7 @@ export class PathFactory {
     )
   }
 
-  static boxAround = (l:Line, width = 1) => {
+  static boxAround = (l:Line, width = 4) => {
     let gs:Point[] = [] // generated points
 
     // Go width / 2 away at 90°
