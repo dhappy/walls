@@ -1,6 +1,6 @@
 import React from 'react'
 import { PointView } from './view'
-import { Point, StaticPoint } from './index'
+import { Point } from '.'
 
 export class PointController
  extends React.Component<
@@ -39,7 +39,7 @@ export class PointController
 
   mouseMove = (evt:any) => {
     if(this.state.selected) {
-      let at = StaticPoint.toCanvas(
+      let at = Point.toCanvas(
         evt.clientX, evt.clientY
       )
       this.state.center.moveTo(at)

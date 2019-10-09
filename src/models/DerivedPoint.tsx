@@ -1,6 +1,6 @@
-import { Point, BasePoint } from '../Point/index'
+import { Point } from '../Point'
 
-export class DerivedPoint extends BasePoint {
+export class DerivedPoint extends Point {
   from:Point[] = []
   fx:(() => number)|undefined
   fy:(() => number)|undefined

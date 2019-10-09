@@ -6,6 +6,7 @@ import { MoveTo } from "../models/MoveTo"
 import { ClosePath } from "../models/ClosePath"
 import { Path } from "."
 import { PointArgOp } from "../models/PointArgOp"
+import { PointFactory as Linker } from '../Point/factory'
 
 export class PathFactory {
   width:number = 4
@@ -55,20 +56,30 @@ export class PathFactory {
     let gs:Point[] = [] // generated points
 
     // Go width / 2 away at 90°
-    let pre = l.a.away(l.minv, -width / 2)
+    let pre = Linker.away(
+      l.a, l.minv, -width / 2
+    )
    
     // Then follow m to find the corner
-    gs.push(pre.away(l.m, -width / 2))
+    gs.push(Linker.away(
+      pre, l.m, -width / 2
+    ))
 
     // The second point is width away at 1/m
-    gs.push(gs[gs.length - 1].away(l.minv, width))
+    gs.push(Linker.away(
+      gs[gs.length - 1], l.minv, width
+    ))
 
     // Repeat reversed for the bottom
-    pre = l.b.away(l.minv, width / 2)
-    gs.push(pre.away(l.m, width / 2))
-    gs.push(
-      gs[gs.length - 1].away(l.minv, -width)
+    pre = Linker.away(
+      l.b, l.minv, width / 2
     )
+    gs.push(Linker.away(
+      pre, l.m, width / 2
+    ))
+    gs.push(Linker.away(
+      gs[gs.length - 1], l.minv, -width
+    ))
 
     let lines = gs.slice(1).map(
       g => new LineTo(g)

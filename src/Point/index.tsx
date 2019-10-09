@@ -1,19 +1,7 @@
 import { Deltas } from '../models/Deltas'
 import { Offset } from '../models/Offset'
-import { DerivedPoint } from '../models/DerivedPoint'
 
-export interface Point {
-  x:number
-  y:number
-
-  moveTo:(p:Point) => Point
-  offsetTo:(p:Point) => Deltas
-  plus:(o:Offset) => Point
-  away:(m:number, d:number) => Point
-  addMoveListener:(l:() => any) => any
-}
-
-export class BasePoint implements Point {
+export class Point {
   x:number
   y:number
   private onMoves:(() => any)[] = []
@@ -47,46 +35,10 @@ export class BasePoint implements Point {
   )
 
   plus = (o:Offset) => (
-    new StaticPoint({
+    new Point({
       x: this.x + o.dx, y: this.y + o.dy,
     })
   )
-
-  // https://www.geeksforgeeks.org/find-points-at-a-given-distance-on-a-line-of-given-slope/
-  away = (m:number, d:number):Point => {
-    let impl = (through:Point, m:number, distance:number) => {
-      const imm = Math.sqrt(1 / (1 + m * m))
-      let factor = { x: imm, y: imm * m }
-
-      if(m === Infinity) {
-        factor = { x: 0, y: 1 }
-      } else if(m === -Infinity) {
-        factor = { x: 0, y: -1 }
-      } else if(Object.is(m, -0)) {
-        factor = { x: -1, y: 0 }
-      } else if(m === 0) {
-        factor = { x: 1, y: 0 }
-      } else if(m < 0) {
-        m *= -1 // Wrong
-      }
-
-      return {
-        x: through.x + distance * factor.x,
-        y: through.y + distance * factor.y,
-      }
-    }
-
-    return new DerivedPoint({
-      from: [(this as Point)],
-      fx: (p:Point) => impl(p, m, d).x,
-      fy: (p:Point) => impl(p, m, d).y,
-    })
-  }
-}
-
-export class StaticPoint extends BasePoint {
-  rel = {
-  }
 
   static toCanvas(x:number, y:number):Point {
     let svg = document.getElementById('canvas') as unknown as SVGSVGElement
@@ -100,6 +52,6 @@ export class StaticPoint extends BasePoint {
       pt = pt.matrixTransform(ctm.inverse())
     }
 
-    return new StaticPoint({x: pt.x, y: pt.y })
+    return new Point({x: pt.x, y: pt.y })
   }
 }
