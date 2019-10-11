@@ -13,7 +13,7 @@ export function PointView({
     <circle
      cx={center.x}
      cy={center.y}
-     r='3'
+     r='4'
      className={['handle', selected ? 'selected' : ''].join(' ')}
      onMouseDown={mouseDown}
      onMouseUp={mouseUp}

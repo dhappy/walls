@@ -1,8 +1,8 @@
 import React from 'react'
 import { PlanView } from './view'
 import { Wall } from '../Wall'
-import { PathFactory } from '../Path/factory'
 import { Rectangle } from '../models/Rectangle'
+import { BasicPath } from '../Path/Basic'
 
 export class PlanController
  extends React.Component<
@@ -13,19 +13,26 @@ export class PlanController
 
     this.state = {
       viewbox: new Rectangle({
-        width: 360, height: 240
+        width: 260, height: 140
       }),
-      walls: [new Wall(PathFactory.parse(
+      walls: [new Wall(BasicPath.parse(
         'M12,12L248,12M248,36L248,104'
-        + 'M248,128L12,128M12,104L12,36'
-        + 'M24,24L36,36L48,36L48,60'
-        + 'L60,60L130,116L236,24'
+        //+ 'M248,128L12,128M12,104L12,36'
+        //+ 'M24,24L36,36L48,36L48,60'
+        //+ 'L60,60L130,116L236,24'
       ))]
     }
   }
 
   scroll = (evt:any) => {
-    console.info('Scroll', evt)
+    let pad = 0.1
+    if(evt.deltaY < 0) pad *= -1
+    
+    this.setState({
+      // viewbox: (
+      //   this.state.viewbox.growBy(pad)
+      // )
+    })
   }
 
   render = () => (

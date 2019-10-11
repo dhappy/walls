@@ -1,4 +1,5 @@
-import { Point } from '../Point'
+import { Point } from '.'
+import { Equations as Eqs } from '../models/Equations'
 
 export class DerivedPoint extends Point {
   from:Point[] = []
@@ -48,4 +49,20 @@ export class DerivedPoint extends Point {
       + Math.pow(p.y - this.y, 2)
     )
   }
+
+  static away = ({ m_, dist, from }:{
+      m_:() => number,
+      dist:number,
+      from:Point
+  }):DerivedPoint => (
+    new DerivedPoint({
+      from: [from],
+      fx: (p:Point) => (
+        Eqs.m_dp(m_, dist, from).x
+      ),
+      fy: (p:Point) => (
+        Eqs.m_dp(m_, dist, from).y
+      ),
+    })
+  )
 }
